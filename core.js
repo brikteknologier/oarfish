@@ -5,8 +5,6 @@ var day = 60 * 60 * 24;
 var retainSec = 14 * day;
 var retryNotifyMSec = 3 * 60 * 1000;
 
-retryNotifyMSec = 5000;
-
 /*
  * "notify" must be an asynchronous function (emitter, trigger, next).  The emitter must
  * be used to emit 'log' events, and the trigger object must be of the form:
@@ -15,9 +13,11 @@ retryNotifyMSec = 5000;
  *   url: <where to send the notification>,
  *   json: <data to send as the request> }
  */
-function init(redisClient, notify) {
-  var db = redisClient;
+function init(redisClient, notify, retryNotifyMSecOverride) {
+  if (retryNotifyMSecOverride != undefined)
+    retryNotifyMSec = retryNotifyMSecOverride;
 
+  var db = redisClient;
   var emitter = new EventEmitter();
 
   function addTrigger(jobId, triggerStatus, sendJson, sendUrl, next) {
@@ -68,6 +68,7 @@ function init(redisClient, notify) {
           notifyAndDelete(trigger, triggers[i]);
       }
       emitter.emit("log", "...done");
+      next();
     }
     async.auto({
       triggers: triggers,
