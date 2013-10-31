@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "mocha": "~1.13.0",
-    "assert": "~0.4.9"
+    "assert": "~0.4.9",
+    "disposable-redis": "~1.1.0"
   }
 }
