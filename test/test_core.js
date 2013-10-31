@@ -29,4 +29,11 @@ describe("core", function() {
     assert(core, "core not initialized");
   });
 
+  it("can register new triggers", function(next) {
+    core.addTrigger("dummyjob", "dummystatus", '"dummyjson"', "http://example.com/", next);
+  });
+
+  it("can receive job status updates", function(next) {
+    core.updateStatus("sillyjob", "sillified", next);
+  });
 });
