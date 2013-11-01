@@ -19,6 +19,7 @@ function init(redisClient, notify, retryNotifyMSecOverride) {
 
   var db = redisClient;
   var emitter = new EventEmitter();
+  var stopped = false;
 
   function addTrigger(jobId, triggerStatus, sendJson, sendUrl, next) {
     var triggerObject = {
@@ -48,8 +49,12 @@ function init(redisClient, notify, retryNotifyMSecOverride) {
             emitter.emit("log", "Could not send trigger for " + jobId +
                          " to recipient.  Trying again in " + (retryNotifyMSec / 60000) +
                          " minutes.");
-            setTimeout(function() { notifyAndDelete(trigger, redisMember); },
-                       retryNotifyMSec);                       
+            setTimeout(
+              function() {
+                if (!stopped)
+                  notifyAndDelete(trigger, redisMember);
+              },
+              retryNotifyMSec);                       
             return;
           }
           emitter.emit("log", "Notification successful. Deleting spent trigger for job " +
@@ -109,6 +114,7 @@ function init(redisClient, notify, retryNotifyMSecOverride) {
   }
 
   function end() {
+    stopped = true;
     emitter.emit("log", "Closing database connection.");
     db.end();
   }
