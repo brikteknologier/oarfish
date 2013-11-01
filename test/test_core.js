@@ -102,7 +102,7 @@ describe("core", function() {
     setTimeout(next, 100);
   });
 
-  it("retries if notifiee does not respond with 2XX", function(next) {
+  it("retries if notifiee not successfully notified", function(next) {
     assert.fail("test not implemented");
   });
 
