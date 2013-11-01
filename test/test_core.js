@@ -129,18 +129,18 @@ describe("core", function() {
   it("triggers when trigger added after status has been updated", function(next) {
     var endpoint = "http://example.com/derp";
     var payload = JSON.stringify("importantjson");
-    core.addTrigger("stevejob", "iStatus", payload, endpoint, added);
+    core.addTrigger("billbob", "iStatus", payload, endpoint, added);
     
     function added(err) {
       if (err) return next(err);
-      core.updateStatus("stevejob", "iStatus", function(err) {
+      core.updateStatus("billbob", "iStatus", function(err) {
         if (err) next(err);
         setTimeout(addNotifiee, 10);
       });
     }
 
     function addNotifiee() {
-      onNotify("stevejob", function() {
+      onNotify("billbob", function() {
         next();
       });
     }
