@@ -15,9 +15,10 @@ describe("core", function() {
   function notifier(emitter, trigger, next) {
     if (!notifications[trigger.job])
       return next("no listeners");
-    notifications[trigger.job](null, trigger);
+    var callback = notifications[trigger.job];
     delete notifications[trigger.job];
-    next();
+    var errorIfAny = callback(null, trigger);
+    next(errorIfAny);
   }
 
   before(function(next) {
@@ -25,7 +26,7 @@ describe("core", function() {
     this.timeout(10 * 60 * 1000);
     disposableRedis.client(function(err, result) {
       if (err) return next(err);
-      core = coreInit(result.client, notifier);
+      core = coreInit(result.client, notifier, 10);
       disposableClient = result;
       next();
     });
@@ -104,7 +105,25 @@ describe("core", function() {
   });
 
   it("retries if notifiee not successfully notified", function(next) {
-    assert.fail("test not implemented");
+    var registeredNegativeNotification = false;
+    
+    onNotify("stevejob", function() {
+      onNotify("stevejob", function() {
+        next();
+      });
+      return "Please try again.";
+    });
+
+    var endpoint = "http://example.com/derp";
+    var payload = JSON.stringify("importantjson");
+    core.addTrigger("stevejob", "iStatus", payload, endpoint, added);
+    
+    function added(err) {
+      if (err) return next(err);
+      core.updateStatus("stevejob", "iStatus", function(err) {
+        if (err) next(err);
+      });
+    }
   });
 
   it("triggers when trigger added after status has been updated", function(next) {
