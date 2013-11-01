@@ -85,7 +85,8 @@ describe("core", function() {
 
   it("does not trigger when job status updates to some other state", function(next) {
     onNotify("unimportantjob", function() {
-      assert.fail("Should not have received notification.");
+      clearTimeout(successTimeout);
+      next("Should not have received notification.");
     });
 
     var endpoint = "http://example.com/derp";
@@ -94,12 +95,12 @@ describe("core", function() {
     
     function added(err) {
       if (err) return next(err);
-      core.updateStatus("importantjob", "badstatus", function(err) {
+      core.updateStatus("unimportantjob", "badstatus", function(err) {
         if (err) return next(err);
       });
     }
-
-    setTimeout(next, 100);
+    
+    var successTimeout = setTimeout(next, 100);
   });
 
   it("retries if notifiee not successfully notified", function(next) {
