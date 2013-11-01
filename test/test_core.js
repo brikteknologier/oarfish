@@ -127,7 +127,23 @@ describe("core", function() {
   });
 
   it("triggers when trigger added after status has been updated", function(next) {
-    assert.fail("test not implemented");
+    var endpoint = "http://example.com/derp";
+    var payload = JSON.stringify("importantjson");
+    core.addTrigger("stevejob", "iStatus", payload, endpoint, added);
+    
+    function added(err) {
+      if (err) return next(err);
+      core.updateStatus("stevejob", "iStatus", function(err) {
+        if (err) next(err);
+        setTimeout(addNotifiee, 10);
+      });
+    }
+
+    function addNotifiee() {
+      onNotify("stevejob", function() {
+        next();
+      });
+    }
   });
 
   it("remembers triggers after a restart", function(next) {
