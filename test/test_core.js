@@ -162,7 +162,16 @@ describe("core", function() {
   });
 
   it("remembers job statuses after a restart", function(next) {
-    assert.fail("test not implemented");
+    onNotify("jeb", function() {
+      next();
+    });
+    
+    core.updateStatus("jeb", "in space", function(err) {
+      if (err) return next(err);
+      core.end();
+      core = coreInit(redis.createClient(disposableServer.port), notifier, 10);
+      core.addTrigger("jeb", "in space", function(){});
+    });
   });
 
   it("catches up on retries after a restart", function(next) {
