@@ -5,7 +5,7 @@ var disposableRedis = require('disposable-redis');
 var coreInit = require('../core');
 
 describe("core", function() {
-  var disposableClient;
+  var disposableServer;
   var core;
 
   var notifications = {};
@@ -24,17 +24,18 @@ describe("core", function() {
   before(function(next) {
     // First invocation of disposable-redis may need to download and build redis.
     this.timeout(10 * 60 * 1000);
-    disposableRedis.client(function(err, result) {
+    disposableRedis.server(function(err, server) {
       if (err) return next(err);
-      core = coreInit(result.client, notifier, 10);
-      disposableClient = result;
+      disposableServer = server;
+      var client = redis.createClient(disposableServer.port);
+      core = coreInit(client, notifier, 10);
       next();
     });
   });
 
   after(function() {
     core.end();
-    disposableClient.close();
+    disposableServer.close();
   });
 
   it("exists", function() {
@@ -147,7 +148,17 @@ describe("core", function() {
   });
 
   it("remembers triggers after a restart", function(next) {
-    assert.fail("test not implemented");
+    onNotify("jobber", function() {
+      next();
+    });
+
+    core.addTrigger("jobber", "drunk", "{}", "http://example.com", added);
+    function added(err) {
+      if (err) return next(err);
+      core.end();
+      core = coreInit(redis.createClient(disposableServer.port), notifier, 10);
+      core.updateStatus("jobber", "drunk", function(){});
+    }
   });
 
   it("remembers job statuses after a restart", function(next) {
