@@ -84,10 +84,9 @@ describe("core", function() {
   });
 
   it("does not trigger when job status updates to some other state", function(next) {
-    onNotify("unimportantjob", function(notifyNext) {
+    onNotify("unimportantjob", function() {
       clearTimeout(successTimeout);
       next("Should not have received notification.");
-      notifyNext("I don't want this notification, silly bunny.");
     });
 
     var endpoint = "http://example.com/derp";
