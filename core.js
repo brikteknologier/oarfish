@@ -79,7 +79,10 @@ function init(redisClient, notify, retryNotifyMSecOverride) {
   
   var triggerQueue = async.queue(_tryTrigger, 1);
   function tryTrigger(jobId) {
-    triggerQueue.push(jobId, function ignore(){});
+    triggerQueue.push(jobId, function pushed(err){
+      if (err)
+        emiiter.emit("log", "tryTrigger failed: " + JSON.stringify(err));
+    });
   }
 
   function updateStatus(jobId, status, next) {
