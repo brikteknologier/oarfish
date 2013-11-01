@@ -175,6 +175,19 @@ describe("core", function() {
   });
 
   it("catches up on retries after a restart", function(next) {
-    assert.fail("test not implemented");
+    onNotify("jerb", function() {
+      core.end();
+      core = coreInit(redis.createClient(disposableServer.port), notifier, 10);
+      onNotify("jerb", function() {
+        next();
+      });
+      return "Eeeh not this time.";
+    });
+
+    core.addTrigger("jerb", "dun", "{}", "http://example.com", added);
+    function added(err) {
+      if (err) return next(err);
+      core.updateStatus("jerb", "dun", function(){});
+    }
   });
 });
