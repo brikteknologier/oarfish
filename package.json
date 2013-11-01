@@ -4,7 +4,7 @@
   "description": "Server to relay job statuses from Amazon Elastic Transcoder.",
   "main": "oarfish.js",
   "scripts": {
-    "test": "node_modules/mocha/bin/mocha -R nyan"
+    "test": "./node_modules/mocha/bin/mocha -R nyan $OPT"
   },
   "repository": {
     "type": "git",
