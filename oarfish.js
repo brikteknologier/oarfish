@@ -23,17 +23,3 @@ var core = coreInit(redis.createClient(), notify);
 core.on("log", function(msg) {
   console.log(msg);
 });
-
-var async = require('async');
-function add(next) {
-  core.addTrigger("job#37", "complacent", JSON.stringify("payload yo"),
-                  "http://localhost:3333", next);
-}
-function complete(next) {
-  core.updateStatus("job#37", "complete", next);
-}
-function complacent(next) {
-  core.updateStatus("job#37", "complacent", next);
-}
-
-async.series([add, complete, complacent], function(err) { if (err) console.log(err); });
