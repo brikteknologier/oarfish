@@ -11,7 +11,7 @@ have been accepted.
 
 # HTTP API
 
-## POST /subscribe/<jobid>/<status>
+## POST /subscribe/:jobid/:status
 
 Let oarfish know that you wish to be notified *once* with a POST message when the
 corresponding job has the given status.
