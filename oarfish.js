@@ -53,6 +53,8 @@ app.get('/status/:jobid', function(req, res, next) {
     req.params.jobid,
     function(err, status) {
       if (err) return next(err);
+      if (status == null)
+        return res.status(404).send('¯\\(°_o)/¯');
       res.send(status);
     }
   );
