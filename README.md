@@ -22,14 +22,12 @@ few minutes for up to two weeks.
 Body should be JSON with two fields:
 
 * url - Where to send the notification.
-* payload - What to put in the request body when posting to the notification url.
-  This will be sent as `Content-Type: application/json` whether you want it to or not.
 
 Example:
 ```
 {
-  "url": "http://transcodingbunny.ru/jobComplete",
-  "payload": "{\"videoReady\": \"benny\"}"
+  "url": "http://transcodingbunny.ru/jobComplete"
+}
 ```
 
 ## PUT/POST/GET? /status?/help?/bunnies?

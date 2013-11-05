@@ -10,8 +10,7 @@ var retryNotifyMSec = 3 * 60 * 1000;
  * be used to emit 'log' events, and the trigger object must be of the form:
  * { job: <job id>,
  *   trigger: <job status causing the trigger>,
- *   url: <where to send the notification>,
- *   json: <data to send as the request> }
+ *   url: <where to send the notification> }
  */
 function init(redisClient, notify, retryNotifyMSecOverride) {
   if (retryNotifyMSecOverride != undefined)
@@ -25,11 +24,10 @@ function init(redisClient, notify, retryNotifyMSecOverride) {
     db.get("job_" + jobId, next);
   }
 
-  function addTrigger(jobId, triggerStatus, sendJson, sendUrl, next) {
+  function addTrigger(jobId, triggerStatus, sendUrl, next) {
     var triggerObject = {
       job: jobId,
       trigger: triggerStatus,
-      json: sendJson,
       url: sendUrl };
     var triggerJson = JSON.stringify(triggerObject);
     emitter.emit("log", "Adding trigger: " + triggerJson);

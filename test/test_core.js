@@ -43,7 +43,7 @@ describe("core", function() {
   });
 
   it("can register new triggers", function(next) {
-    core.addTrigger("dummyjob", "dummystatus", '"dummyjson"', "http://example.com/", next);
+    core.addTrigger("dummyjob", "dummystatus", "http://example.com/", next);
   });
 
   it("can receive job status updates", function(next) {
@@ -54,8 +54,7 @@ describe("core", function() {
     onNotify("importantjob", next);
 
     var endpoint = "http://example.com/derp";
-    var payload = JSON.stringify("importantjson");
-    core.addTrigger("importantjob", "importantstatus", payload, endpoint, added);
+    core.addTrigger("importantjob", "importantstatus", endpoint, added);
     
     function added(err) {
       if (err) return next(err);
@@ -65,26 +64,6 @@ describe("core", function() {
     }
   });
   
-  it("sends correct payload on trigger", function(next) {
-    onNotify("correctjob", notificationReceived);
-
-    var endpoint = "http://example.com/derp";
-    var payload = JSON.stringify("the very best of jsons");
-    core.addTrigger("correctjob", "performed", payload, endpoint, added);
-    
-    function added(err) {
-      if (err) return next(err);
-      core.updateStatus("correctjob", "performed", function(err) {
-        if (err) return next(err);
-      });
-    }
-
-    function notificationReceived(err, trigger) {
-      assert.equal(trigger.json, payload);
-      next();
-    }
-  });
-
   it("does not trigger when job status updates to some other state", function(next) {
     onNotify("unimportantjob", function() {
       clearTimeout(successTimeout);
@@ -92,8 +71,7 @@ describe("core", function() {
     });
 
     var endpoint = "http://example.com/derp";
-    var payload = JSON.stringify("importantjson");
-    core.addTrigger("unimportantjob", "goodstatus", payload, endpoint, added);
+    core.addTrigger("unimportantjob", "goodstatus", endpoint, added);
     
     function added(err) {
       if (err) return next(err);
@@ -116,8 +94,7 @@ describe("core", function() {
     });
 
     var endpoint = "http://example.com/derp";
-    var payload = JSON.stringify("importantjson");
-    core.addTrigger("stevejob", "iStatus", payload, endpoint, added);
+    core.addTrigger("stevejob", "iStatus", endpoint, added);
     
     function added(err) {
       if (err) return next(err);
@@ -129,8 +106,7 @@ describe("core", function() {
 
   it("triggers when trigger added after status has been updated", function(next) {
     var endpoint = "http://example.com/derp";
-    var payload = JSON.stringify("importantjson");
-    core.addTrigger("billbob", "iStatus", payload, endpoint, added);
+    core.addTrigger("billbob", "iStatus", endpoint, added);
     
     function added(err) {
       if (err) return next(err);
@@ -152,7 +128,7 @@ describe("core", function() {
       next();
     });
 
-    core.addTrigger("jobber", "drunk", "{}", "http://example.com", added);
+    core.addTrigger("jobber", "drunk", "http://example.com", added);
     function added(err) {
       if (err) return next(err);
       core.end();
@@ -184,7 +160,7 @@ describe("core", function() {
       return "Eeeh not this time.";
     });
 
-    core.addTrigger("jerb", "dun", "{}", "http://example.com", added);
+    core.addTrigger("jerb", "dun", "http://example.com", added);
     function added(err) {
       if (err) return next(err);
       core.updateStatus("jerb", "dun", function(){});

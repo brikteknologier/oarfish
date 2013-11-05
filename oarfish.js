@@ -10,15 +10,13 @@ function notify(emitter, trigger, next) {
                " to " + trigger.url);
   var opts = url.parse(trigger.url);
   opts.method = "POST";
-  opts.headers = { "Content-Type": "application/json" };
   var req = http.request(opts, function(res) {
     if (res.statusCode < 200 || res.statusCode > 299)
       return next("Did not get 2XX reply from " + trigger.url);
     next();
   });
   req.on('error', next);
-  req.write(trigger.json);
-  req.end();
+  req.send('boop');
 }
 
 var logger = console.log;
@@ -39,7 +37,6 @@ app.post('/subscribe/:jobid/:status', function(req, res, next) {
   core.addTrigger(
     req.params.jobid,
     req.params.status,
-    req.body.payload,
     req.body.url,
     function(err) {
       if (err) return next(err);
