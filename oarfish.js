@@ -58,6 +58,6 @@ app.get('/status/:jobid', function(req, res, next) {
   );
 });
 
-app.post('/notify', amazonListener);
+app.post('/notify', amazonListener.handlePost);
 
 app.listen(9444);

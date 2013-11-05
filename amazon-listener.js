@@ -21,4 +21,10 @@ function createHandler(updateStatus) {
       res.send(["KTHX","ASUM","OK","SWEET","K","LOL","GOOD","NOTED"][Date.now()%8]);
     });
   }
+
+  emitter.handlePost = handler;
+
+  return emitter;
 }
+
+module.exports = createHandler;
