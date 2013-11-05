@@ -50,7 +50,7 @@ app.post('/subscribe/:jobid/:status', function(req, res, next) {
 
 app.get('/status/:jobid', function(req, res, next) {
   core.readStatus(
-    req.params.jobid
+    req.params.jobid,
     function(err, status) {
       if (err) return next(err);
       res.send(status);
