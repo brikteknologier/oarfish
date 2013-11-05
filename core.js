@@ -21,6 +21,10 @@ function init(redisClient, notify, retryNotifyMSecOverride) {
   var emitter = new EventEmitter();
   var stopped = false;
 
+  function readStatus(jobId, next) {
+      db.get("job_" + jobId, next);    
+  }
+
   function addTrigger(jobId, triggerStatus, sendJson, sendUrl, next) {
     var triggerObject = {
       job: jobId,
@@ -40,7 +44,7 @@ function init(redisClient, notify, retryNotifyMSecOverride) {
       db.zrange("triggers", 0, -1, next);
     }
     function jobStatus(next) {
-      db.get("job_" + jobId, next);
+      readStatus(jobId, next);
     }
     function doTrigger(next, res) {
       function notifyAndDelete(trigger, redisMember) {
@@ -119,6 +123,7 @@ function init(redisClient, notify, retryNotifyMSecOverride) {
     db.end();
   }
 
+  emitter.readStatus = readStatus;
   emitter.updateStatus = updateStatus;
   emitter.end = end;
   emitter.addTrigger = addTrigger;

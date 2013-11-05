@@ -1,6 +1,6 @@
 var EventEmitter = require('events').EventEmitter;
 
-function createHandler() {
+function createHandler(updateStatus) {
   var emitter = new EventEmitter();
 
   function handler(req, res, next) {
@@ -15,7 +15,10 @@ function createHandler() {
 
     emit('log', "Notification received: " + body.Subject || body);
     var message = JSON.parse(body.Message);
-    emit('state', message.jobId, message.state);
-    res.send(["KTHX","ASUM","OK","SWEET","K","LOL","GOOD","NOTED"][Date.now()%8]);
+
+    updateStatus(message.jobId, message.state, function(err) {
+      if (err) return next(err);
+      res.send(["KTHX","ASUM","OK","SWEET","K","LOL","GOOD","NOTED"][Date.now()%8]);
+    });
   }
 }

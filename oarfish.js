@@ -1,8 +1,9 @@
 var express = require('express');
 var http = require('http');
 var url = require('url');
-var coreInit = require('./core');
 var redis = require('redis');
+var coreInit = require('./core');
+var amazonListenerInit = require('./amazon-listener');
 
 function notify(emitter, trigger, next) {
   emitter.emit("log", "Notifying job " + trigger.job + " status " + trigger.trigger +
@@ -20,10 +21,13 @@ function notify(emitter, trigger, next) {
   req.end();
 }
 
+var logger = console.log;
+
 var core = coreInit(redis.createClient(), notify);
-core.on("log", function(msg) {
-  console.log(msg);
-});
+core.on('log', logger);
+
+var amazonListener = amazonListenerInit(core.updateStatus);
+amazonListener.on('log', logger);
 
 var app = express();
 app.use(express.bodyParser());
@@ -32,7 +36,6 @@ app.post('/subscribe/:jobid/:status', function(req, res, next) {
   var type = req.get('Content-Type');
   if (type != 'application/json')
     return next("Body data must be application/json");
-  console.log(req.body);
   core.addTrigger(
     req.params.jobid,
     req.params.status,
@@ -44,5 +47,17 @@ app.post('/subscribe/:jobid/:status', function(req, res, next) {
     }
   );
 });
+
+app.get('/status/:jobid', function(req, res, next) {
+  core.readStatus(
+    req.params.jobid
+    function(err, status) {
+      if (err) return next(err);
+      res.send(status);
+    }
+  );
+});
+
+app.post('/notify', amazonListener);
 
 app.listen(9444);
