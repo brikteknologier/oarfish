@@ -1,7 +1,5 @@
 # oarfish
 
-DOCUMENTATION NOT YET FINISHED
-
 This is a web service designed to listen for incoming job status updates from Amazon Elastic
 Transcoder, and send HTTP requests to other servers when certain job conditions are met.
 
