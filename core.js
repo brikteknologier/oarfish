@@ -22,7 +22,7 @@ function init(redisClient, notify, retryNotifyMSecOverride) {
   var stopped = false;
 
   function readStatus(jobId, next) {
-      db.get("job_" + jobId, next);    
+    db.get("job_" + jobId, next);
   }
 
   function addTrigger(jobId, triggerStatus, sendJson, sendUrl, next) {
