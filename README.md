@@ -39,6 +39,11 @@ encoded object containing at least the fields:
 * `Subject`: Human-readable summary of notification.
 * `Message`: JSON encoded transcoding job status.
 
+The decoded `Message` object must contain at least two fields:
+
+* `jobId`: ID of the transcoding job.
+* `state`: Current status of transcoding job.  For example `"PROGRESSING"`.
+
 An example notification request:
 
 ```
