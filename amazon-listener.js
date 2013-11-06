@@ -19,6 +19,13 @@ function createHandler(updateStatus) {
         return next(error);
       }
       
+      if (message.state != 'COMPLETED' &&
+          message.state != 'ERROR') {
+        // Since SNS messages can come out-of-order in case of network
+        // glitches, we ignore all but the final states.
+        res.send("I DON'T CARE");
+      }
+
       updateStatus(message.jobId, message.state, function(err) {
         if (err) return next(err);
         res.send(["KTHX","ASUM","OK","SWEET","K","LOL","GOOD","NOTED"][Date.now()%8]);
