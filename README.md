@@ -32,6 +32,9 @@ Example:
 
 This is where all the AET pipeline's SNS topics should be pointed at.
 
+Since notifications can arrive out-of-order in case of network glitches, we ignore
+all messages that are not for the final transcoder job states `COMPLETED` and `ERROR`.
+
 Assumes it will be sent a POST with `text/plain` containing a JSON
 encoded object containing at least the fields:
 
