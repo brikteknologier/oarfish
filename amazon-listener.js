@@ -13,7 +13,7 @@ function createHandler(updateStatus) {
     if (typeof body != 'object')
       body = JSON.parse(body);
 
-    emit('log', "Notification received: " + body.Subject || body);
+    emitter.emit('log', "Notification received: " + body.Subject || body);
     var message = JSON.parse(body.Message);
 
     updateStatus(message.jobId, message.state, function(err) {
