@@ -17,7 +17,7 @@ module.exports = function extractOrangeJuice(config) {
       next();
     });
     req.on('error', next);
-    req.send('boop');
+    req.end('boop');
   }
   
   var logger = console.log;
