@@ -25,8 +25,7 @@ module.exports = function extractOrangeJuice(config, next) {
   
   function initRedis(next) {
     var client = redis.createClient(config.redis.port, config.redis.host);
-    client.select(config.db, function(err) {
-      if (err) return next(err);
+    client.on('ready', function() {
       next(null, client);
     });
   }
