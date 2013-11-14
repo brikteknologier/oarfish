@@ -2,7 +2,7 @@
   "name": "oarfish",
   "version": "0.0.0",
   "description": "Server to relay job statuses from Amazon Elastic Transcoder.",
-  "main": "oarfish.js",
+  "main": "server.js",
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha -R nyan $OPT"
   },
@@ -18,7 +18,8 @@
   "dependencies": {
     "async": "~0.2.9",
     "redis": "~0.9.0",
-    "express": "~3.4.4"
+    "express": "~3.4.4",
+    "servinator": "~0.1.4"
   },
   "devDependencies": {
     "mocha": "~1.13.0",
