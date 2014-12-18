@@ -1,6 +1,6 @@
 {
   "name": "oarfish",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Server to relay job statuses from Amazon Elastic Transcoder.",
   "main": "server.js",
   "scripts": {
