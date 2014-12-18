@@ -57,6 +57,17 @@ module.exports = function extractOrangeJuice(config, next) {
         }
       );
     });
+
+    app.get('/triggers', function(req, res, next) {
+      core.readTriggers(
+        function(err, status) {
+          if (err) return next(err);
+          if (status == null)
+            return res.status(404).send('¯\\(o_°)/¯');
+          res.send(status);
+        }
+      );
+    });
     
     app.get('/status/:jobid', function(req, res, next) {
       core.readStatus(

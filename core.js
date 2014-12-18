@@ -24,6 +24,10 @@ function init(redisClient, notify, retryNotifyMSecOverride) {
     db.get("job_" + jobId, next);
   }
 
+  function readTriggers(next) {
+    db.zrange("triggers", 0, -1, next);
+  }
+
   function addTrigger(jobId, triggerStatus, sendUrl, next) {
     var triggerObject = {
       job: jobId,
@@ -38,9 +42,6 @@ function init(redisClient, notify, retryNotifyMSecOverride) {
   
   function _tryTrigger(jobId, next) {
     emitter.emit("log", "Checking if job " + jobId + " can be triggered");
-    function triggers(next) {
-      db.zrange("triggers", 0, -1, next);
-    }
     function jobStatus(next) {
       readStatus(jobId, next);
     }
@@ -78,7 +79,7 @@ function init(redisClient, notify, retryNotifyMSecOverride) {
       next();
     }
     async.auto({
-      triggers: triggers,
+      triggers: readTriggers,
       jobStatus: jobStatus,
       doTrigger: ["triggers", "jobStatus", doTrigger]
     }, next);
@@ -121,6 +122,7 @@ function init(redisClient, notify, retryNotifyMSecOverride) {
     db.end();
   }
 
+  emitter.readTriggers = readTriggers;
   emitter.readStatus = readStatus;
   emitter.updateStatus = updateStatus;
   emitter.end = end;
