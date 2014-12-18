@@ -4,6 +4,7 @@ var http = require('http');
 var url = require('url');
 var redis = require('redis');
 var coreInit = require('./core');
+var _ = require('underscore');
 var amazonListenerInit = require('./amazon-listener');
 
 module.exports = function extractOrangeJuice(config, next) {
@@ -25,9 +26,9 @@ module.exports = function extractOrangeJuice(config, next) {
   
   function initRedis(next) {
     var client = redis.createClient(config.redis.port, config.redis.host);
-    client.on('ready', function() {
+    client.on('ready', _.once(function() {
       next(null, client);
-    });
+    }));
   }
 
   function initCore(redisClient, next) {
